@@ -10,11 +10,11 @@ b.Author
 c.Input variables
 	firstTime, secondTime - These are then split into hours and minutes stored in 4 other varibles:
 	firstHours, firstMinutes, secondHours, secondMinutes.
-	
+
 d.Process Flow
 	The application asks users for 2 inputes of military time.
-	It proceeds to subtract the first from the second time in case the times are within the same 2400 hour span. 
-	If the second time is less than the first time it is assumed that the hours will be in a future day and 
+	It proceeds to subtract the first from the second time in case the times are within the same 2400 hour span.
+	If the second time is less than the first time it is assumed that the hours will be in a future day and
 		time is added accordingly to deal with the 'negative' values that would come about with the prior calculation.
 	Once all calculations are taken care of, the user is shown the time difference split into hours and minutes.
 	Finally the application asks the user if they would like to rerun or exit the application.
@@ -57,25 +57,22 @@ int main()
 
 	// As stated, if the first time is greater (in the future) than the second time,
 	// the calculations fall through this section.
-	if (secondTime < firstTime)
+#pragma region HandlingOfNextDayTime
+	// This section checks for any values lower than 0, as in hours or minutes and
+	// adjusts the values accordingly to adjust for 'future date' calculation
+	if (diffHours < 0)
 	{
-		// 23 hours and 60 minutes are added to counteract
-		// the negative values and produce the future date.
-		diffHours = diffHours + 23;
-		diffMinutes = diffMinutes + 60;
-		
-		// If after adding the minutes and they add to 60 or more,
-		// 60 is subtracted and an hour is added since 60 minutes
-		// is an hour and keeps minutes within 00-59.
-		if (diffMinutes >= 60)
-		{
-			diffMinutes = diffMinutes - 60;
-			diffHours = diffHours++;
-		}
+		diffHours = diffHours + 24;
 	}
+	// If minutes need to be used, subtract 1 hour to keep time balanced.
+	if (diffMinutes < 0)
+	{
+		diffMinutes = diffMinutes + 60;
+		diffHours = diffHours--;
+	}
+#pragma endregion
 
-
-	// Simply outputs the difference of the two times.
+	// Simply outputs the calculated difference of the two times.
 	cout << "The difference in time is " << diffHours << " hours and " << diffMinutes << " minutes." << endl;
 
 	// Asks user if they would like to run application again a Y[es] will restart the app,
